@@ -114,7 +114,7 @@ console.table(filteredDeals);
 console.log("\n ##### TODO 7 ##### \n");
 
 const averageDiscount = deals.reduce((sum, deal) => sum + deal.discount, 0) / deals.length;
-console.log('Average discount:', averageDiscount.toFixed(2), '%');
+console.log("Average discount:", averageDiscount.toFixed(2), '%');
 
 /**
  * 🏎
@@ -141,17 +141,44 @@ console.log('Average discount:', averageDiscount.toFixed(2), '%');
 
 console.log("\n ##### TODO 8 ##### \n");
 
+const dealsByCommunity = deals.reduce((acc, deal) => {
+  if (!acc[deal.community]) {
+    acc[deal.community] = [];
+  }
+  acc[deal.community].push(deal);
+  return acc;
+}, {});
+console.log(dealsByCommunity);
+
+for (const community in dealsByCommunity) {
+  console.log("${community}: ${dealsByCommunity[community].length} deals");
+}
+
+
 // 🎯 TODO 9: Sort by price for each community
 // 1. For each community, sort the deals by discount price, from highest to lowest
 // 2. Log the sort
 
 console.log("\n ##### TODO 9 ##### \n");
 
+for (const community in dealsByCommunity) {
+  dealsByCommunity[community].sort((a, b) => b.price - a.price);
+  console.log("Deals for ${community}:");
+  console.table(dealsByCommunity[community]);
+}
+
+
 // 🎯 TODO 10: Sort by date for each community
 // 1. For each set, sort the deals by date, from old to recent
 // 2. Log the sort
 
 console.log("\n ##### TODO 10 ##### \n");
+
+for (const community in dealsByCommunity) {
+  dealsByCommunity[community].sort((a, b) => new Date(a.published) - new Date(b.published));
+  console.log("Deals for ${community} sorted by date:");
+  console.table(dealsByCommunity[community]);
+}
 
 
 /**
