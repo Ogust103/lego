@@ -15,8 +15,6 @@ const MY_FAVORITE_DEALERS = [
   }
 ];
 
-const highestReduction = 
-
 console.table(MY_FAVORITE_DEALERS);
 console.log(MY_FAVORITE_DEALERS[0]);
 
@@ -31,9 +29,11 @@ console.log(MY_FAVORITE_DEALERS[0]);
 // 0. I have 2 favorite lego sets shopping communities stored in MY_FAVORITE_DEALERS variable
 // 1. Create a new variable and assign it the link of the lego set with the highest reduction I can find on these 2 websites
 // 2. Log the variable
+
+console.log("\n ##### TODO 1 ##### \n")
+
 const linkToHighestReduction = "https://www.dealabs.com/bons-plans/lego-marvel-super-heroes-2-switch-demat-2974630";
 console.log(linkToHighestReduction);
-
 
 /**
  * 🧱
@@ -48,28 +48,58 @@ console.log(linkToHighestReduction);
 // 1. Create a variable and assign it the number of deals
 // 2. Log the variable
 
+console.log("\n ##### TODO 2 ##### \n")
+
+const numberOfDeals = deals.length;
+console.log("Number of deals :", numberOfDeals);
+
 // 🎯 TODO 3: Website name
 // 1. Create a variable and assign it the list of shopping community name only
 // 2. Log the variable
 // 3. Log how many shopping communities we have
+
+console.log("\n ##### TODO 3 ##### \n")
+
+const communityNames = deals.map(deal => deal.community);
+console.log(communityNames);
+
+const uniqueCommunities = [...new Set(communityNames)];
+console.log(uniqueCommunities);
+console.log("Number of unique communities : ", uniqueCommunities.length);
+
 
 // 🎯 TODO 4: Sort by price
 // 1. Create a function to sort the deals by price
 // 2. Create a variable and assign it the list of sets by price from lowest to highest
 // 3. Log the variable
 
+console.log("\n ##### TODO 4 ##### \n")
+
+function sortByPrice(deals) {
+  return [...deals].sort((a, b) => a.price - b.price);
+}
+const dealsSortedByPrice = sortByPrice(deals);
+console.table(dealsSortedByPrice);
+
+
 // 🎯 TODO 5: Sort by date
 // 1. Create a function to sort the deals by date
 // 2. Create a variable and assign it the list of deals by date from recent to old
 // 3. Log the variable
 
+console.log("\n ##### TODO 5 ##### \n")
+
 // 🎯 TODO 6: Filter a specific percentage discount range
 // 1. Filter the list of deals between 50% and 75%
 // 2. Log the list
 
+console.log("\n ##### TODO 6 ##### \n")
+
 // 🎯 TODO 7: Average percentage discount
 // 1. Determine the average percentage discount of the deals
 // 2. Log the average
+
+console.log("\n ##### TODO 7 ##### \n")
 
 /**
  * 🏎
@@ -94,13 +124,19 @@ console.log(linkToHighestReduction);
 // 2. Log the variable
 // 3. Log the number of deals by community
 
+console.log("\n ##### TODO 8 ##### \n")
+
 // 🎯 TODO 9: Sort by price for each community
 // 1. For each community, sort the deals by discount price, from highest to lowest
 // 2. Log the sort
 
+console.log("\n ##### TODO 9 ##### \n")
+
 // 🎯 TODO 10: Sort by date for each community
 // 1. For each set, sort the deals by date, from old to recent
 // 2. Log the sort
+
+console.log("\n ##### TODO 10 ##### \n")
 
 
 /**
@@ -394,20 +430,31 @@ const VINTED = [
 // 3. Compute the p25 price value of the listing
 // The p25 value (25th percentile) is the lower value expected to be exceeded in 25% of the vinted items
 
+console.log("\n ##### TODO 11 ##### \n")
+
 // 🎯 TODO 12: Very old listed items
 // // 1. Log if we have very old items (true or false)
 // // A very old item is an item `published` more than 3 weeks ago.
+
+console.log("\n ##### TODO 12 ##### \n")
 
 // 🎯 TODO 13: Find a specific item
 // 1. Find the item with the uuid `f2c5377c-84f9-571d-8712-98902dcbb913`
 // 2. Log the item
 
+console.log("\n ##### TODO 12 ##### \n")
+
 // 🎯 TODO 14: Delete a specific item
 // 1. Delete the item with the uuid `f2c5377c-84f9-571d-8712-98902dcbb913`
 // 2. Log the new list of items
 
-// 🎯 TODO 5: Save a favorite item
+console.log("\n ##### TODO 13 ##### \n")
+
+// 🎯 TODO 15: Save a favorite item
 // We declare and assign a variable called `sealedCamera`
+
+console.log("\n ##### TODO 3 ##### \n")
+
 let sealedCamera = {
   link: "https://www.vinted.fr/items/5563396347-lego-43230-omaggio-a-walter-disney-misb",
   price: "131.95",
@@ -437,8 +484,11 @@ sealedCamera = {
 // 3. Update `camera` property with `favorite` to true WITHOUT changing sealedCamera properties
 
 
-// 🎯 TODO 11: Compute the profitability
+// 🎯 TODO 16: Compute the profitability
 // From a specific deal called `deal`
+
+console.log("\n ##### TODO 3 ##### \n")
+
 const deal = {
   'title':  'La caméra Hommage à Walt Disney',
   'retail': 75.98,
