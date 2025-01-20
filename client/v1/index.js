@@ -114,7 +114,7 @@ console.table(filteredDeals);
 console.log("\n ##### TODO 7 ##### \n");
 
 const averageDiscount = deals.reduce((sum, deal) => sum + deal.discount, 0) / deals.length;
-console.log("Average discount:", averageDiscount.toFixed(2), '%');
+console.log("Average discount : ", averageDiscount.toFixed(2), '%');
 
 /**
  * 🏎
@@ -151,7 +151,7 @@ const dealsByCommunity = deals.reduce((acc, deal) => {
 console.log(dealsByCommunity);
 
 for (const community in dealsByCommunity) {
-  console.log("${community}: ${dealsByCommunity[community].length} deals");
+  console.log("${community} : ${dealsByCommunity[community].length} deals");
 }
 
 
@@ -163,7 +163,7 @@ console.log("\n ##### TODO 9 ##### \n");
 
 for (const community in dealsByCommunity) {
   dealsByCommunity[community].sort((a, b) => b.price - a.price);
-  console.log("Deals for ${community}:");
+  console.log("Deals for ${community} : ");
   console.table(dealsByCommunity[community]);
 }
 
@@ -176,7 +176,7 @@ console.log("\n ##### TODO 10 ##### \n");
 
 for (const community in dealsByCommunity) {
   dealsByCommunity[community].sort((a, b) => new Date(a.published) - new Date(b.published));
-  console.log("Deals for ${community} sorted by date:");
+  console.log("Deals for ${community} sorted by date : ");
   console.table(dealsByCommunity[community]);
 }
 
@@ -474,11 +474,34 @@ const VINTED = [
 
 console.log("\n ##### TODO 11 ##### \n");
 
+function computePercentile(prices, percentile) {
+  const sortedPrices = [...prices].sort((a, b) => a - b);
+  const index = Math.ceil((percentile / 100) * sortedPrices.length) - 1;
+  return sortedPrices[index];
+}
+
+const vintedPrices = VINTED.map(item => parseFloat(item.price));
+const averagePrice = vintedPrices.reduce((sum, price) => sum + price, 0) / vintedPrices.length;
+const p5 = computePercentile(vintedPrices, 5);
+const p25 = computePercentile(vintedPrices, 25);
+
+console.log("Average price : ", averagePrice.toFixed(2));
+console.log("P5 price value : ", p5.toFixed(2));
+console.log("P25 price value : ", p25.toFixed(2));
+
+
 // 🎯 TODO 12: Very old listed items
 // // 1. Log if we have very old items (true or false)
 // // A very old item is an item `published` more than 3 weeks ago.
 
 console.log("\n ##### TODO 12 ##### \n");
+
+const threeWeeksAgo = new Date();
+threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+
+const hasVeryOldItems = VINTED.some(item => new Date(item.published) < threeWeeksAgo);
+console.log("Has very old items : ", hasVeryOldItems);
+
 
 // 🎯 TODO 13: Find a specific item
 // 1. Find the item with the uuid `f2c5377c-84f9-571d-8712-98902dcbb913`
@@ -486,11 +509,19 @@ console.log("\n ##### TODO 12 ##### \n");
 
 console.log("\n ##### TODO 13 ##### \n");
 
+const specificItem = VINTED.find(item => item.uuid === "f2c5377c-84f9-571d-8712-98902dcbb913");
+console.log("Specific item : ", specificItem);
+
+
 // 🎯 TODO 14: Delete a specific item
 // 1. Delete the item with the uuid `f2c5377c-84f9-571d-8712-98902dcbb913`
 // 2. Log the new list of items
 
 console.log("\n ##### TODO 14 ##### \n");
+
+const updatedVintedList = VINTED.filter(item => item.uuid !== "f2c5377c-84f9-571d-8712-98902dcbb913");
+console.log("Updated VINTED list : ", updatedVintedList);
+
 
 // 🎯 TODO 15: Save a favorite item
 // We declare and assign a variable called `sealedCamera`
@@ -512,7 +543,10 @@ let camera = sealedCamera;
 camera.favorite = true;
 
 // 1. Log `sealedCamera` and `camera` variables
+console.log("Sealed Camera:", sealedCamera);
+console.log("Camera with favorite:", camera);
 // 2. What do you notice?
+console.log("sealedCamera also get the 'favorite' variable");
 
 // we make (again) a new assignment again
 sealedCamera = {
@@ -524,6 +558,11 @@ sealedCamera = {
 };
 
 // 3. Update `camera` property with `favorite` to true WITHOUT changing sealedCamera properties
+camera = { ...sealedCamera, favorite: true };
+
+console.log("Sealed Camera : ", sealedCamera);
+console.log("Camera with favorite  :", camera);
+
 
 
 // 🎯 TODO 16: Compute the profitability
@@ -541,6 +580,19 @@ const deal = {
 // 1. Compute the potential highest profitability based on the VINTED items
 // 2. Log the value
 
+let maxProfit = 0;
+
+for (let item of VINTED) {
+  const profit = parseFloat(item.price) - deal.price;
+
+  if (profit > maxProfit) {
+    maxProfit = profit;
+  }
+}
+
+console.log("Potential highest profitability : ", maxProfit);
+
+
 
 
 /**
@@ -552,3 +604,11 @@ const deal = {
 // 🎯 LAST TODO: Save in localStorage
 // 1. Save MY_FAVORITE_DEALERS in the localStorage
 // 2. log the localStorage
+
+console.log("\n ##### LAST TODO ##### \n");
+
+localStorage.setItem("MY_FAVORITE_DEALERS", JSON.stringify(MY_FAVORITE_DEALERS));
+
+const storedDealers = JSON.parse(localStorage.getItem("MY_FAVORITE_DEALERS"));
+console.log("Dealers from localStorage : ", storedDealers);
+ 
