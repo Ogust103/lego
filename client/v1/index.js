@@ -486,8 +486,8 @@ const p5 = computePercentile(vintedPrices, 5);
 const p25 = computePercentile(vintedPrices, 25);
 
 console.log("Average price : ", averagePrice.toFixed(2));
-console.log("P5 price value : ", p5.toFixed(2));
-console.log("P25 price value : ", p25.toFixed(2));
+console.log("P5 price value : ", p5);
+console.log("P25 price value : ", p25);
 
 
 // 🎯 TODO 12: Very old listed items
@@ -581,7 +581,7 @@ const deal = {
 // 2. Log the value
 
 let maxProfit = 0;
-let bestItem = 0;
+let bestItem = null;
 
 for (let item of VINTED) {
   const profit = parseFloat(item.price) - deal.price;
