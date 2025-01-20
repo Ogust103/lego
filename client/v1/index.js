@@ -581,18 +581,19 @@ const deal = {
 // 2. Log the value
 
 let maxProfit = 0;
+let bestItem = 0;
 
 for (let item of VINTED) {
   const profit = parseFloat(item.price) - deal.price;
 
   if (profit > maxProfit) {
     maxProfit = profit;
+    bestItem = item;
   }
 }
 
 console.log("Potential highest profitability : ", maxProfit);
-
-
+console.log("Item with highest profitability : ", bestItem);
 
 
 /**
