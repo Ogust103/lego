@@ -31,6 +31,9 @@ const selectPage = document.querySelector('#page-select');
 const selectLegoSetIds = document.querySelector('#lego-set-id-select');
 const sectionDeals= document.querySelector('#deals');
 const spanNbDeals = document.querySelector('#nbDeals');
+const buttonFilterDiscount = document.querySelector('#filter-discount');
+const buttonFilterCommented = document.querySelector('#filter-commented');
+const buttonFilterHotDeals = document.querySelector('#filter-hot-deals');
 
 /**
  * Set global value
@@ -138,6 +141,28 @@ const render = (deals, pagination) => {
 };
 
 /**
+ * Filter deals by best discount (> 30%)
+ */
+const filterByBestDiscount = (deals) => {
+  return deals.filter(deal => deal.discount && deal.discount > 50);
+};
+
+/**
+ * Filter deals by most commented (> 5 comments)
+ */
+const filterByMostCommented = (deals) => {
+  return deals.filter(deal => deal.comments && deal.comments > 5);
+};
+
+/**
+ * Filter deals by hot deals (temperature > 100)
+ */
+const filterByHotDeals = (deals) => {
+  return deals.filter(deal => deal.temperature && deal.temperature > 100); // Supposons que "temperature" existe dans les données
+};
+
+
+/**
  * Declaration of all Listeners
  */
 
@@ -158,6 +183,29 @@ selectPage.addEventListener('change', async (event) => {
   setCurrentDeals(deals); 
   render(currentDeals, currentPagination); 
 });
+
+buttonFilterDiscount.addEventListener('click', async () => {
+  const deals = currentDeals.length > 0 ? currentDeals : (await fetchDeals(currentPagination.currentPage, parseInt(selectShow.value) || 6)).result;
+
+  const filteredDeals = filterByBestDiscount(deals);
+  render(filteredDeals, currentPagination);
+});
+
+buttonFilterCommented.addEventListener('click', async () => {
+  const deals = currentDeals.length > 0 ? currentDeals : (await fetchDeals(currentPagination.currentPage, parseInt(selectShow.value) || 6)).result;
+
+  const filteredDeals = filterByMostCommented(deals);
+  render(filteredDeals, currentPagination);
+});
+
+buttonFilterHotDeals.addEventListener('click', async () => {
+  const deals = currentDeals.length > 0 ? currentDeals : (await fetchDeals(currentPagination.currentPage, parseInt(selectShow.value) || 6)).result;
+
+  const filteredDeals = filterByHotDeals(deals);
+  render(filteredDeals, currentPagination);
+});
+
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   const deals = await fetchDeals();
