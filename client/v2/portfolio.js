@@ -34,6 +34,7 @@ const spanNbDeals = document.querySelector('#nbDeals');
 const buttonFilterDiscount = document.querySelector('#filter-discount');
 const buttonFilterCommented = document.querySelector('#filter-commented');
 const buttonFilterHotDeals = document.querySelector('#filter-hot-deals');
+const selectSort = document.querySelector('#sort-select');
 
 /**
  * Set global value
@@ -163,6 +164,38 @@ const filterByHotDeals = (deals) => {
 
 
 /**
+ * Sort deals by price (ascending or descending)
+ */
+const sortByPrice = (deals, order) => {
+  return deals.sort((a, b) => {
+    if (order === 'price-asc') {
+      return a.price - b.price;
+    } else if (order === 'price-desc') {
+      return b.price - a.price;
+    }
+    return 0; 
+  });
+};
+
+/**
+ * Sort deals by date (ascending or descending)
+ */
+const sortByDate = (deals, order) => {
+  return deals.sort((a, b) => {
+    const dateA = new Date(a.published);
+    const dateB = new Date(b.published);
+    
+    if (order === 'date-asc') {
+      return dateB - dateA;
+    } else if (order === 'date-desc') {
+      return dateA - dateB;
+    }
+    return 0;
+  });
+};
+
+
+/**
  * Declaration of all Listeners
  */
 
@@ -203,6 +236,19 @@ buttonFilterHotDeals.addEventListener('click', async () => {
 
   const filteredDeals = filterByHotDeals(deals);
   render(filteredDeals, currentPagination);
+});
+
+selectSort.addEventListener('change', async (event) => {
+  const order = event.target.value;
+  let deals = currentDeals.length > 0 ? currentDeals : (await fetchDeals(currentPagination.currentPage, parseInt(selectShow.value) || 6)).result;
+
+  if (order.includes('price')) {
+    deals = sortByPrice(deals, order);
+  } else if (order.includes('date')) {
+    deals = sortByDate(deals, order);
+  }
+
+  render(deals, currentPagination);
 });
 
 
