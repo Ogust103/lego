@@ -142,24 +142,24 @@ const render = (deals, pagination) => {
 };
 
 /**
- * Filter deals by best discount (> 30%)
+ * Filter deals by best discount (> 50%)
  */
 const filterByBestDiscount = (deals) => {
   return deals.filter(deal => deal.discount && deal.discount > 50);
 };
 
 /**
- * Filter deals by most commented (> 5 comments)
+ * Filter deals by most commented (> 15 comments)
  */
 const filterByMostCommented = (deals) => {
-  return deals.filter(deal => deal.comments && deal.comments > 5);
+  return deals.filter(deal => deal.comments && deal.comments > 15);
 };
 
 /**
  * Filter deals by hot deals (temperature > 100)
  */
 const filterByHotDeals = (deals) => {
-  return deals.filter(deal => deal.temperature && deal.temperature > 100); // Supposons que "temperature" existe dans les données
+  return deals.filter(deal => deal.temperature && deal.temperature > 100);
 };
 
 
