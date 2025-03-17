@@ -23,9 +23,23 @@ const parse = data => {
           .text()
       ));
 
+      const id = Math.abs(parseInt(
+        $(element)
+          .find('span.prodl-ref')
+          .text()
+      ));
+
+      const img = (
+        $(element)
+          .find('.prodl-img img')
+          .attr("data-src")
+      );
+
       return {
         discount,
         price,
+        id,
+        img,
         'title': $(element).attr('title'),
       };
     })
