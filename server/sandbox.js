@@ -1,14 +1,20 @@
 /* eslint-disable no-console, no-process-exit */
 const fs = require('fs');
 const path = require('path');
-// const site = require('./websites/avenuedelabrique');
-const site = require('./websites/dealabs');
 
-async function sandbox(website = 'https://www.avenuedelabrique.com/nouveautes-lego') {
+const websites = {
+  "avenuedelabrique" : "https://www.avenuedelabrique.com/nouveautes-lego",
+  "dealabs" : "https://www.dealabs.com/groupe/lego",
+  "vinted" : `https://www.vinted.fr/catalog?search_text=`,
+}
+
+async function sandbox(website, name) {
   try {
-    console.log(`🕵️‍♀️  browsing ${website} website`);
+    const site = require('./websites/' + website);
+    const url = websites[website] + name;
+    console.log(`🕵️‍♀️  browsing ${url} website`);
 
-    const deals = await site.scrape(website);
+    const deals = await site.scrape(url);
 
     console.log(deals);
 
@@ -25,6 +31,6 @@ async function sandbox(website = 'https://www.avenuedelabrique.com/nouveautes-le
   }
 }
 
-const [,, eshop] = process.argv;
+const [,, eshop, id = ""] = process.argv;
 
-sandbox(eshop);
+sandbox(eshop, id);

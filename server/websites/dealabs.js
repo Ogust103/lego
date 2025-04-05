@@ -64,13 +64,13 @@ const parse = data => {
         .text()
         .trim() || null;
 
-        const comments = parseInt(
-          $(element)
-            .find('.icon--comments')
-            .parent()
-            .text()
-            .trim()
-        );
+      const comments = parseInt(
+        $(element)
+          .find('.icon--comments')
+          .parent()
+          .text()
+          .trim()
+      );
         
 
       return {
@@ -106,13 +106,3 @@ module.exports.scrape = async url => {
     return null;
   }
 };
-
-(async () => {
-  const url = 'https://www.dealabs.com/bons-plans/pack-de-demarrage-les-aventures-de-peach-71403-lego-super-mario-3034211';
-  const result = await module.exports.scrape(url);
-  if (result) {
-    console.log(result[0]);
-  } else {
-    console.log('Échec du scraping, result est null');
-  }
-})();
