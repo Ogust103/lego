@@ -1,101 +1,132 @@
+// server/api.js
 const express = require('express');
-const { MongoClient, ObjectId } = require('mongodb');
+const { MongoClient } = require('mongodb');
 require('dotenv').config();
-const cors = require('cors');
+const { close } = require('./db/mongo');
+
+const PORT = process.env.PORT || 8092;
+const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_DB_NAME = 'lego';
 
 const app = express();
-const PORT = process.env.PORT || 8092;
-
-const uri = process.env.MONGODB_URI;
-const dbName = 'lego';
-
 let db;
+
+// Connexion MongoDB
 const connect = async () => {
   if (!db) {
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    db = client.db(dbName);
+    const client = await MongoClient.connect(MONGODB_URI);
+    db = client.db(MONGODB_DB_NAME);
   }
   return db;
 };
 
-app.use(cors());
-app.use(express.json());
-
-// ➤ Check API status
-app.get('/', (req, res) => {
-  res.json({ status: '✅ API is running' });
-});
-
-// ➤ GET /deals/:id
+// Route : GET /deals/:id
 app.get('/deals/:id', async (req, res) => {
-  const db = await connect();
-  const deal = await db.collection('deals').findOne({ _id: new ObjectId(req.params.id) });
-  res.json(deal);
+  try {
+    const db = await connect();
+    const collection = db.collection('deals');
+    const deal = await collection.findOne({ legoId: parseInt(req.params.id) });
+    if (!deal) return res.status(404).json({ error: 'Deal not found' });
+    res.json(deal);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// ➤ GET /deals/search
+// Route : GET /deals/search
 app.get('/deals/search', async (req, res) => {
-  const db = await connect();
-  const {
-    limit = 12,
-    price,
-    date,
-    filterBy
-  } = req.query;
+  try {
+    const db = await connect();
+    const collection = db.collection('deals');
 
-  const query = {};
+    const {
+      limit = 12,
+      price,
+      date,
+      filterBy
+    } = req.query;
 
-  if (price) {
-    query.price = { $lte: parseFloat(price) };
+    const query = {};
+
+    if (price) {
+      query.price = { $lte: parseFloat(price) };
+    }
+
+    if (date) {
+      const timestamp = new Date(date).getTime() / 1000;
+      query.published = { $gte: timestamp };
+    }
+
+    if (filterBy === 'best-discount') {
+      query.discount = { $gte: 50 };
+    } else if (filterBy === 'most-commented') {
+      query.comments = { $gte: 15 };
+    } else if (filterBy === 'hot-deals') {
+      query.temperature = { $gte: 100 };
+    }
+
+    const deals = await collection
+      .find(query)
+      .sort({ price: 1 })
+      .limit(parseInt(limit))
+      .toArray();
+
+    res.json({
+      limit: parseInt(limit),
+      total: deals.length,
+      results: deals
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  if (filterBy === 'best-discount') {
-    query.discount = { $gte: 50 };
-  }
-
-  if (filterBy === 'most-commented') {
-    query.comments = { $gte: 15 };
-  }
-
-  if (filterBy === 'hot-deals') {
-    query.temperature = { $gte: 100 };
-  }
-
-  if (date) {
-    const timestamp = new Date(date).getTime() / 1000;
-    query.published = { $gte: timestamp };
-  }
-
-  const results = await db.collection('deals')
-    .find(query)
-    .sort({ price: 1 })
-    .limit(parseInt(limit))
-    .toArray();
-
-  res.json({ limit: parseInt(limit), total: results.length, results });
 });
 
-// ➤ GET /sales/search
+// Route : GET /sales/search
 app.get('/sales/search', async (req, res) => {
-  const db = await connect();
-  const {
-    limit = 12,
-    legoSetId
-  } = req.query;
+  try {
+    const db = await connect();
+    const collection = db.collection('sales');
 
-  const query = {};
-  if (legoSetId) query.legoSetId = parseInt(legoSetId);
+    const {
+      limit = 12,
+      legoSetId
+    } = req.query;
 
-  const results = await db.collection('sales')
-    .find(query)
-    .sort({ published: -1 })
-    .limit(parseInt(limit))
-    .toArray();
+    const query = {};
+    if (legoSetId) {
+      query.legoSetId = legoSetId;
+    }
 
-  res.json({ limit: parseInt(limit), total: results.length, results });
+    const sales = await collection
+      .find(query)
+      .sort({ published: -1 })
+      .limit(parseInt(limit))
+      .toArray();
+
+    res.json({
+      limit: parseInt(limit),
+      total: sales.length,
+      results: sales
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Start server
+// Lancer le serveur
 app.listen(PORT, () => {
-  console.log(`🚀 API is running on http://localhost:${PORT}`);
+  console.log(`📦 LEGO API listening on http://localhost:${PORT}`);
+});
+
+// Fermer proprement MongoDB à l’arrêt du serveur
+process.on('SIGINT', async () => {
+  console.log('\n🛑 SIGINT received. Closing MongoDB connection...');
+  await close();
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  console.log('\n🛑 SIGTERM received. Closing MongoDB connection...');
+  await close();
+  process.exit(0);
 });

@@ -15,6 +15,14 @@ const connect = async () => {
   return db;
 };
 
+const close = async () => {
+  if (client) {
+    await client.close();
+    client = null;
+    db = null;
+  }
+};
+
 const insertDeals = async deals => {
   const db = await connect();
   const collection = db.collection('deals');
@@ -38,5 +46,6 @@ const insertSales = async (legoSetId, sales) => {
 
 module.exports = {
   insertDeals,
-  insertSales
+  insertSales,
+  close
 };

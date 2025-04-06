@@ -1,5 +1,5 @@
 const { scrape } = require('./websites/dealabs');
-const { insertDeals } = require('./db/mongo');
+const { insertDeals, close } = require('./db/mongo');
 
 const main = async () => {
   const url = 'https://www.dealabs.com/groupe/lego';
@@ -12,6 +12,12 @@ const main = async () => {
   } else {
     console.log('No deals found.');
   }
+
+  await close();
 };
 
-main();
+main().catch(err => {
+  console.error('An error occurred:', err);
+  close(); // Ferme la connexion même en cas d'erreur
+  process.exit(1);
+});

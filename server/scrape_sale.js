@@ -1,5 +1,5 @@
 const { scrape } = require('./websites/vinted');
-const { insertSales } = require('./db/mongo');
+const { insertSales, close } = require('./db/mongo');
 
 const legoSetId = process.argv[2]; // ex: node scrape_sales.js 42156
 
@@ -19,6 +19,13 @@ const main = async () => {
   } else {
     console.log('No sales found.');
   }
+
+  // Ferme la connexion MongoDB après avoir terminé
+  await close();
 };
 
-main();
+main().catch(err => {
+  console.error('An error occurred:', err);
+  close(); // Ferme la connexion même en cas d'erreur
+  process.exit(1);
+});
