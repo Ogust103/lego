@@ -1,0 +1,46 @@
+.deal-card.styled {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  
+  .deal-img {
+    width: 150px;
+    border-radius: 8px;
+  }
+  
+  .deal-details {
+    flex: 1;
+  }
+  
+  .deal-details h3 {
+    margin-top: 0;
+  }
+  
+  .badge {
+    display: inline-block;
+    background: gold;
+    color: #222;
+    padding: 4px 8px;
+    border-radius: 8px;
+    margin-top: 8px;
+    font-size: 0.9em;
+  }
+  
+  .badge.hot {
+    background: crimson;
+    color: white;
+    margin-left: 8px;
+  }
+  
+  .gain {
+    font-weight: bold;
+    color: green;
+  }
+  

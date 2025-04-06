@@ -1,83 +1,68 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>🧱 Lego | Predictability of a lego set deal</title>
-  </head>
-  <body>
-    <h1>Lego</h1>
-    <section id="options">
-      <div id="show">
-        <label for="show-select">Show:</label>
-        <select name="show" id="show-select">
-          <option value="6">6</option>
-          <option value="12">12</option>
-          <option value="24">24</option>
-        </select>
-      </div>
-      <div id="page">
-        <label for="page-select">Go to page:</label>
-        <select name="page" id="page-select"> </select>
-      </div>
-      <div id="filters">
-        <button id="filter-discount">By best discount</button>
-        <button id="filter-commented">By most commented</button>
-        <button id="filter-hot-deals">By hot deals</button>
-      </div>
-      <div id="sort">
-        <label for="sort-select">Sort:</label>
-        <select name="sort" id="sort-select">
-          <option value="price-asc">Cheaper</option>
-          <option value="price-desc">Expensive</option>
-          <option value="date-asc">Recently published</option>
-          <option value="date-desc">Anciently published</option>
-        </select>
-      </div>
-    </section>
-    <section id="lego">
-      <h2>Lego sets</h2>
-      <div>
-        <label>Lego set id:</label>
-        <select id="lego-set-id-select"></select> 
-      </div>
-    </section>
-    <section id="vidsfsdfnted-sales">
-      <h2>Vinted Sales</h2>
-      <div>
-        <label for="vinted-sales-select">Select Lego set ID:</label>
-        <select id="vinted-sales-select"></select>
-      </div>
-      <div id="vinted-sales-list"></div>
-    </section>    
-    <section id="indicators">
-      <h2>Indicators</h2>
-      <div>
-        <span>Number of deals</span>
-        <span id="nbDeals">0</span>
-      </div>
-      <div>
-        <span>Number of sales</span>
-        <span id="nbSales">0</span>
-      </div>
-      <div>
-        <span>p5 sales price value</span>
-        <span>0</span>
-      </div>
-      <div>
-        <span>p25 sales price value</span>
-        <span>0</span>
-      </div>
-      <div>
-        <span>p50 sales price value</span>
-        <span>0</span>
-      </div>
-      <div>
-        <span>Lifetime value</span>
-        <span>10 days</span>
-      </div>
-    </section>
-    <section id="deals"></section>
-    <script type="text/javascript" charset="UTF-8" src="utils.js"></script>
-    <script type="text/javascript" charset="UTF-8" src="portfolio.js"></script>
-  </body>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>LEGO Deals</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    #deals-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .deal-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      padding: 1rem;
+      width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .deal-img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .deal-link {
+      background: #0070f3;
+      color: white;
+      padding: 0.5rem;
+      border-radius: 6px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border-radius: 20px;
+      background: #ffeaa7;
+      font-size: 0.8rem;
+    }
+
+    .badge.hot {
+      background: #ff7675;
+      color: white;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>LEGO Deals</h1>
+  <div id="deals-container"></div>
+
+  <script src="portfolio.js"></script>
+</body>
 </html>
