@@ -19,7 +19,9 @@
   "homepage": "https://github.com/Ogust103/lego#readme",
   "dependencies": {
     "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "express": "^5.1.0",
     "mongodb": "^6.15.0",
     "puppeteer": "^24.6.0"
   }

@@ -6,7 +6,6 @@ const parse = data => {
 
   return $('div[data-testid="grid-item"]').map((i, element) => {
     const $element = $(element);
-
     // Extracting the product ID
     const productId = parseInt(
       $element.find('.new-item-box__container').attr('data-testid')?.replace('product-item-id-', '')
@@ -73,9 +72,17 @@ module.exports.scrape = async url => {
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     );
     await page.goto(url, { waitUntil: 'networkidle2' });
-    const html = await page.content();
-    await browser.close();
-    return parse(html);
+    try {
+      await page.waitForSelector('div[data-testid="grid-item"]', { timeout: 10000 });
+      const html = await page.content();
+      await browser.close();
+      return parse(html);
+    } catch (error) {
+      if (error.name === 'TimeoutError') {
+        console.log("Le sélecteur n'a pas été trouvé");
+        return null;
+      }
+    }
   } catch (err) {
     console.error('Scrape error:', err);
     return null;

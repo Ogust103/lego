@@ -1,57 +1,42 @@
-/* eslint-disable no-console, no-process-exit */
-const fs = require('fs');
-const path = require('path');
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
+const dealabs = require('./websites/dealabs');
+const vinted = require('./websites/vinted');
+const { insertDeals, insertSales } = require('./db/mongo');
+const { isProfitable } = require('./analyze');
 
-const websites = {
-  "avenuedelabrique": "https://www.avenuedelabrique.com/nouveautes-lego",
-  "dealabs": "https://www.dealabs.com/groupe/lego",
-  "vinted": `https://www.vinted.fr/catalog?search_text=`,
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const run = async () => {
+  console.log('📦 Scraping Dealabs...');
+  const deals = await dealabs.scrape('https://www.dealabs.com/groupe/lego');
+  console.log(`➡️ ${deals.length} deals scrappés`);
+
+  const enrichedDeals = [];
+  const allSales = [];
+  
+  for (const deal of deals) {
+    if (!deal.id) continue;
+
+    if (true) {
+        console.log(`🔍 Searching Vinted sales for set ID ${deal.id}`);
+        const url = `https://www.vinted.fr/catalog?search_text=lego%20${deal.id}`;
+        const sales = await vinted.scrape(url);
+        if (sales != null) {
+            await delay(1500); // anti-bot protection
+    
+            const profitable = isProfitable(deal, sales);
+            enrichedDeals.push({ ...deal, profitable });
+            allSales.push(...sales.map(s => ({ ...s, legoSetId: deal.id })));
+        }
+    }
+    
+
+  }
+
+  console.log('🧠 Inserting into MongoDB...');
+  await insertDeals(enrichedDeals);
+  await insertSales(allSales);
+
+  console.log('✅ Done.');
 };
 
-async function connectToDb() {
-  const client = await MongoClient.connect(process.env.MONGODB_URI);
-  return client.db('lego');
-}
-
-async function sandbox(website, name) {
-  try {
-    const site = require('./websites/' + website);
-    const url = websites[website] + name;
-    console.log(`🕵️‍♀️  browsing ${url} website`);
-
-    const deals = await site.scrape(url);
-    console.log(`${deals.length} résultats scrapés.`);
-
-    // Sauvegarde locale (facultative)
-    const outputPath = path.join(__dirname, 'deals.json');
-    fs.writeFileSync(outputPath, JSON.stringify(deals, null, 2), 'utf-8');
-    console.log(`Fichier JSON sauvegardé dans ${outputPath}`);
-
-    // Connexion MongoDB
-    const db = await connectToDb();
-    const collectionName = website === "vinted" ? "sales" : "deals";
-    const collection = db.collection(collectionName);
-
-    // Création d’un index unique pour éviter les doublons
-    await collection.createIndex({ id: 1 }, { unique: true });
-
-    // Insertion des données avec gestion des doublons
-    try {
-      const result = await collection.insertMany(deals, { ordered: false });
-      console.log(`${result.insertedCount} nouveaux documents ajoutés dans la collection "${collectionName}".`);
-    } catch (e) {
-      console.warn('Certains doublons ont été ignorés lors de l’insertion.');
-    }
-
-    console.log('Done');
-    process.exit(0);
-  } catch (e) {
-    console.error(e);
-    process.exit(1);
-  }
-}
-
-const [,, eshop, id = ""] = process.argv;
-sandbox(eshop, id);
+run();

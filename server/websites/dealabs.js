@@ -44,7 +44,7 @@ const parse = data => {
       const fullLink = link?.startsWith('http') ? link : `https://www.dealabs.com${link}`;
 
       const legoIDMatch = title.match(/\b\d{4,6}\b/);
-      const id = legoIDMatch ? parseInt(legoIDMatch[0]) : null;
+      const legoId = legoIDMatch ? parseInt(legoIDMatch[0]) : null;
 
       const dealabsIDMatch = link?.match(/(\d{6,})/);
       const dealabsID = dealabsIDMatch ? parseInt(dealabsIDMatch[1]) : null;
@@ -70,14 +70,13 @@ const parse = data => {
           .parent()
           .text()
           .trim()
-      );
-        
+      ) || null;
 
       return {
         discount,
         price,
         oldPrice,
-        id,
+        legoId,
         img,
         title,
         link: fullLink,
@@ -97,10 +96,40 @@ module.exports.scrape = async url => {
     await page.setUserAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     );
-    await page.goto(url, { waitUntil: 'networkidle2' });
-    const html = await page.content();
+
+    let allResults = [];
+    let currentPage = 1;
+    let keepGoing = true;
+
+    while (keepGoing) {
+      const pageUrl = `${url}?page=${currentPage}`;
+      console.log(`Scraping page ${currentPage}: ${pageUrl}`);
+
+      try {
+        await page.goto(pageUrl, { waitUntil: 'networkidle2' });
+        const html = await page.content();
+        const results = parse(html);
+
+        if (results.length === 0) {
+          // Si aucune donnée n'est trouvée, on arrête
+          console.log(`Page ${currentPage} is empty, stopping.`);
+          keepGoing = false;
+        } else {
+          allResults = allResults.concat(results);
+          currentPage++;
+          // Délai pour éviter de surcharger le serveur
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      } catch (error) {
+        // Si une erreur survient (ex. 404), on arrête
+        console.log(`Page ${currentPage} failed with error: ${error.message}, stopping.`);
+        keepGoing = false;
+      }
+    }
+
     await browser.close();
-    return parse(html);
+    return allResults;
+
   } catch (err) {
     console.error('Scrape error:', err);
     return null;
